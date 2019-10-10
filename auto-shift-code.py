@@ -1,6 +1,6 @@
 import requests, lxml.html, feedparser, time, smtplib, ssl, yaml
 
-ONE_HOUR = 3600
+ONE_HOUR = 3600 * 24
 CODE_FEED_LOCATION = 'https://shift.orcicorn.com/tags/borderlands3/index.xml'
 NOTIFICATION_TEMPLATE = """\
 Subject: Shift Codes Status ({} Successful, {} Failed)
@@ -114,7 +114,7 @@ def apply_code(code, config):
     commit = parsed_check_token_response.xpath("/html/body/form/input[@name='commit']/@value")[0]
 
     # submit code
-    code_submission_response = session.post(
+    session.post(
         'https://shift.gearboxsoftware.com/code_redemptions',
         data={
             'utf8' : '✓',
@@ -139,7 +139,6 @@ def apply_code(code, config):
             'upgrade-insecure-requests': '1',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
         },
-        allow_redirects=False
     )
 
 def send_status_email(successful_codes, failed_codes, config):

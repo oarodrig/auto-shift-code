@@ -84,7 +84,8 @@ def apply_code(code, config):
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
         }
     )
-    authenticity_token = parsed_home_response.xpath("/html/head/meta[@name='csrf-token']/@content")[0]
+    parsed_rewards_response = lxml.html.fromstring(rewards_response.content)
+    authenticity_token = parsed_rewards_response.xpath("/html/head/meta[@name='csrf-token']/@content")[0]
 
     # check code
     check_code_response = session.get(

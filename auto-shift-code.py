@@ -1,4 +1,4 @@
-import requests, lxml, feedparser, time, smtplib, ssl, yaml
+import requests, lxml.html, feedparser, time, smtplib, ssl, yaml
 
 ONE_HOUR = 3600
 CODE_FEED_LOCATION = 'https://shift.orcicorn.com/tags/borderlands3/index.xml'

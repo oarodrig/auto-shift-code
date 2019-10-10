@@ -105,7 +105,7 @@ def apply_code(code, config):
 
     # parse code submission form values
     # TODO do this dynamically for all form fields returned, instead of hard-coding names
-    parsed_check_token_response = lxml.html.fromstring(check_code_response.content)
+    parsed_check_token_response = lxml.html.fragments_fromstring(check_code_response.content)[1]
     authenticity_token = parsed_check_token_response.xpath("/html/body/form/input[@name='authenticity_token']/@value")[0]
     redemption_code = parsed_check_token_response.xpath("/html/body/form/input[@name='archway_code_redemption[code]']/@value")[0]
     redemption_check = parsed_check_token_response.xpath("/html/body/form/input[@name='archway_code_redemption[check]']/@value")[0]

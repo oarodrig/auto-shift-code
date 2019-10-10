@@ -1,6 +1,6 @@
 import requests, lxml.html, feedparser, time, smtplib, ssl, yaml
 
-ONE_HOUR = 3600 * 24
+ONE_HOUR = 3600
 CODE_FEED_LOCATION = 'https://shift.orcicorn.com/tags/borderlands3/index.xml'
 NOTIFICATION_TEMPLATE = """\
 Subject: Shift Codes Status ({} Successful, {} Failed)

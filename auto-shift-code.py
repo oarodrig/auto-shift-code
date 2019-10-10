@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import requests, lxml, feedparser, time, smtplib, ssl, yaml
 
 ONE_HOUR = 3600

@@ -114,7 +114,7 @@ def apply_code(code, config):
     commit = parsed_check_token_response.xpath("/html/body/form/input[@name='commit']/@value")[0]
 
     # submit code
-    login_response = session.post(
+    code_submission_response = session.post(
         'https://shift.gearboxsoftware.com/code_redemptions',
         data={
             'utf8' : '✓',

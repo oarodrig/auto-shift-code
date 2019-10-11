@@ -1,4 +1,8 @@
-import requests, lxml.html, feedparser, time, smtplib, ssl, yaml
+# -*- coding: utf-8 -*-
+import requests, lxml.html, feedparser, time, smtplib, ssl, yaml, os
+
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 ONE_HOUR = 3600
 CODE_FEED_LOCATION = 'https://shift.orcicorn.com/tags/borderlands3/index.xml'
@@ -27,7 +31,7 @@ def main():
         send_status_email(successful_codes, failed_codes, config)
 
 def get_config():
-    with open('config.yml', 'r') as config:
+    with open(os.path.join(__location__, 'config.yml'), 'r') as config:
         return yaml.load(config)
 
 def get_codes():

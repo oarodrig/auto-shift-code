@@ -4,7 +4,7 @@ import requests, lxml.html, feedparser, time, smtplib, ssl, yaml, os
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-ONE_HOUR = 3600 * 24
+ONE_HOUR = 3600
 CODE_FEED_LOCATION = 'https://shift.orcicorn.com/tags/borderlands3/index.xml'
 NOTIFICATION_TEMPLATE = """\
 Subject: Shift Codes Status ({} Successful, {} Failed)

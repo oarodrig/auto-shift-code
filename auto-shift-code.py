@@ -41,7 +41,7 @@ def get_config():
 
 def get_codes():
     feed = feedparser.parse(CODE_FEED_LOCATION)
-    return [entry.title for entry in feed.entries if time.time() - time.mktime(entry.published_parsed) < ONE_HOUR]
+    return [entry.title for entry in feed.entries if time.mktime(time.gmtime()) - time.mktime(entry.published_parsed) < ONE_HOUR]
 
 def apply_code(code, config):
     session = requests.session()

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import requests, lxml.html, feedparser, time, smtplib, ssl, yaml, os
+import requests, lxml.html, feedparser, time, smtplib, ssl, yaml, os, argparse, sys
 
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -36,8 +36,31 @@ def main():
         send_status_email(successful_codes, failed_codes, config)
 
 def get_config():
-    with open(os.path.join(__location__, 'config.yml'), 'r') as config:
-        return yaml.load(config)
+    args = getArguments()
+    try:
+        config_file = yaml.load(open(os.path.join(__location__, 'config.yml'), 'r'))
+    except:
+        config_file = {}
+
+    config = {
+        'shift_username': args.u or (config_file['shift_username'] if 'shift_username' in config_file else ''),
+        'shift_password': args.p or (config_file['shift_password'] if 'shift_password' in config_file else ''),
+        'notification_email_recipient': args.r or (config_file['notification_email_recipient'] if 'notification_email_recipient' in config_file else ''),
+        'notification_email_address': config_file['notification_email_address'] if 'notification_email_address' in config_file else '',
+        'notification_email_password': config_file['notification_email_password'] if 'notification_email_password' in config_file else ''
+    }
+
+    if (not config['shift_username'] or not config['shift_password']):
+        raise Exception('Missing SHiFT username or password. Check your command line arguments or config.yml file and try again.')
+
+    return config
+
+def getArguments():
+    arg_parser = argparse.ArgumentParser('Applies BL3 SHiFT codes posted within the last hour to the specified SHiFT account.')
+    arg_parser.add_argument("-u", default=None, help="The username of the SHiFT account")
+    arg_parser.add_argument("-p", default=None, help="The password of the SHiFT account")
+    arg_parser.add_argument("-r", default=None, help="The email address to which to send notification emails")
+    return arg_parser.parse_args()
 
 def get_codes():
     feed = feedparser.parse(CODE_FEED_LOCATION)

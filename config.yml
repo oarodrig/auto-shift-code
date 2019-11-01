@@ -3,3 +3,4 @@ shift_password:
 notification_email_address: 
 notification_email_password: 
 notification_email_recipient: 
+lookback_time_multiplier: 

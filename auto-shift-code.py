@@ -20,7 +20,7 @@ def main():
     config = get_config()
     successful_codes = []
     failed_codes = []
-    for code in get_codes():
+    for code in get_codes(config):
         try:
             apply_code(code, config)
             successful_codes.append(code)
@@ -47,7 +47,8 @@ def get_config():
         'shift_password': args.p or (config_file['shift_password'] if 'shift_password' in config_file else ''),
         'notification_email_recipient': args.r or (config_file['notification_email_recipient'] if 'notification_email_recipient' in config_file else ''),
         'notification_email_address': config_file['notification_email_address'] if 'notification_email_address' in config_file else '',
-        'notification_email_password': config_file['notification_email_password'] if 'notification_email_password' in config_file else ''
+        'notification_email_password': config_file['notification_email_password'] if 'notification_email_password' in config_file else '',
+        'lookback_time_multiplier': args.m or (config_file['lookback_time_multiplier'] if 'lookback_time_multiplier' in config_file else 1),
     }
 
     if (not config['shift_username'] or not config['shift_password']):
@@ -60,11 +61,12 @@ def getArguments():
     arg_parser.add_argument("-u", default=None, help="The username of the SHiFT account")
     arg_parser.add_argument("-p", default=None, help="The password of the SHiFT account")
     arg_parser.add_argument("-r", default=None, help="The email address to which to send notification emails")
+    arg_parser.add_argument("-m", default=None, help="The default amount of time this script looks back for new RSS feed items is 1 hour. Use this multiplier to increase that time.")
     return arg_parser.parse_args()
 
-def get_codes():
+def get_codes(config):
     feed = feedparser.parse(CODE_FEED_LOCATION)
-    return [entry.shift_code for entry in feed.entries if time.mktime(time.gmtime()) - time.mktime(entry.published_parsed) < ONE_HOUR]
+    return [entry.shift_code for entry in feed.entries if time.mktime(time.gmtime()) - time.mktime(entry.published_parsed) < (ONE_HOUR * config['lookback_time_multiplier'])]
 
 def apply_code(code, config):
     session = requests.session()

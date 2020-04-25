@@ -20,12 +20,12 @@ def main():
     config = get_config()
     successful_codes = []
     failed_codes = []
-    for code in get_codes(config):
+    for codeResult in get_codes(config):
         try:
-            apply_code(code, config)
-            successful_codes.append(code)
+            apply_code(codeResult.code, config)
+            successful_codes.append(codeResult)
         except:
-            failed_codes.append(code)
+            failed_codes.append(codeResult)
     
     if (
         (successful_codes or failed_codes)
@@ -66,7 +66,7 @@ def getArguments():
 
 def get_codes(config):
     feed = feedparser.parse(CODE_FEED_LOCATION)
-    return [entry.shift_code for entry in feed.entries if time.mktime(time.gmtime()) - time.mktime(entry.published_parsed) < (ONE_HOUR * config['lookback_time_multiplier'])]
+    return [{'code': entry.shift_code, 'reward': entry.shift_reward} for entry in feed.entries if time.mktime(time.gmtime()) - time.mktime(entry.published_parsed) < (ONE_HOUR * config['lookback_time_multiplier'])]
 
 def apply_code(code, config):
     session = requests.session()
@@ -185,8 +185,8 @@ def send_status_email(successful_codes, failed_codes, config):
             NOTIFICATION_TEMPLATE.format(
                 len(successful_codes),
                 len(failed_codes),
-                '\n'.join(successful_codes) if successful_codes else 'N/A',
-                '\n'.join(failed_codes) if failed_codes else 'N/A',
+                '\n'.join([f'{code_result["code"]} ({code_result["reward"]})' for code_result in successful_codes]) if successful_codes else 'N/A',
+                '\n'.join([f'{code_result["code"]} ({code_result["reward"]})' for code_result in failed_codes]) if failed_codes else 'N/A',
             )
         )
 
